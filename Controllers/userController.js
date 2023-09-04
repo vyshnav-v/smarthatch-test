@@ -29,6 +29,28 @@ export const getUserTask = async (req, res) => {
   }
 };
 
+// const generateNextTaskName = async (parentTaskId) => {
+//   let baseName = "T";
+
+//   if (parentTaskId) {
+//     const parentTask = await Task.findById(parentTaskId);
+//     if (parentTask) {
+//       baseName = parentTask.taskName;
+//     }
+//   }
+
+//   const maxTaskNumber = await Task.findOne({ parentTask: parentTaskId })
+//     .sort({ taskName: -1 })
+//     .limit(1);
+//     let nextTaskNumber = 1;
+//     if (maxTaskNumber && maxTaskNumber.taskName.startsWith(baseName)) {
+//       const lastTaskNumber = parseInt(maxTaskNumber.taskName.split("-")[2], 10);
+//       console.log(lastTaskNumber);
+//     nextTaskNumber = lastTaskNumber + 1;
+//   }
+
+//   return `${baseName}-${nextTaskNumber}`;
+// };
 const generateNextTaskName = async (parentTaskId) => {
   let baseName = "T";
 
@@ -42,11 +64,13 @@ const generateNextTaskName = async (parentTaskId) => {
   const maxTaskNumber = await Task.findOne({ parentTask: parentTaskId })
     .sort({ taskName: -1 })
     .limit(1);
-    let nextTaskNumber = 1;
-    if (maxTaskNumber && maxTaskNumber.taskName.startsWith(baseName)) {
-      const lastTaskNumber = parseInt(maxTaskNumber.taskName.split("-")[2], 10);
-      console.log(lastTaskNumber);
-    nextTaskNumber = lastTaskNumber + 1;
+
+  let nextTaskNumber = 1;
+  if (maxTaskNumber && maxTaskNumber.taskName.startsWith(baseName)) {
+    const lastTaskNumber = parseInt(maxTaskNumber.taskName.split("-")[2], 10);
+    if (!isNaN(lastTaskNumber)) {
+      nextTaskNumber = lastTaskNumber + 1;
+    }
   }
 
   return `${baseName}-${nextTaskNumber}`;
